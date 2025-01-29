@@ -9,6 +9,8 @@ import {
   useForm,
   UseFormReturn,
 } from "react-hook-form";
+import { ZodType } from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,10 +21,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ZodType } from "zod";
 import Link from "next/link";
 import { FIELD_NAMES, FIELD_TYPES } from "@/constants";
-import ImageUpload from "./ImageUpload";
+import FileUpload from "@/components/FileUpload";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -40,6 +41,7 @@ const AuthForm = <T extends FieldValues>({
   onSubmit,
 }: Props<T>) => {
   const router = useRouter();
+
   const isSignIn = type === "SIGN_IN";
 
   const form: UseFormReturn<T> = useForm({
@@ -71,7 +73,9 @@ const AuthForm = <T extends FieldValues>({
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-semibold text-white">
-        {isSignIn ? "Welcome Back!" : "Create your library account"}
+        {isSignIn
+          ? "Welcome back to Knowledge Center"
+          : "Create your library account"}
       </h1>
       <p className="text-light-100">
         {isSignIn
@@ -81,7 +85,7 @@ const AuthForm = <T extends FieldValues>({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className="space-y-6 w-full"
+          className="w-full space-y-6"
         >
           {Object.keys(defaultValues).map((field) => (
             <FormField
@@ -95,7 +99,14 @@ const AuthForm = <T extends FieldValues>({
                   </FormLabel>
                   <FormControl>
                     {field.name === "universityCard" ? (
-                      <ImageUpload onFileChange={field.onChange} />
+                      <FileUpload
+                        type="image"
+                        accept="image/*"
+                        placeholder="Upload your ID"
+                        folder="ids"
+                        variant="dark"
+                        onFileChange={field.onChange}
+                      />
                     ) : (
                       <Input
                         required
@@ -132,5 +143,4 @@ const AuthForm = <T extends FieldValues>({
     </div>
   );
 };
-
 export default AuthForm;
